@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love App ❤️</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--tg-theme-bg-color, #ffe6e6);
+            color: var(--tg-theme-text-color, #333);
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100vh;
+        }
+        .card {
+            background: var(--tg-theme-secondary-bg-color, #fff);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(255, 105, 135, 0.2);
+        }
+        h1 { color: #ff4d4d; }
+        .stats { font-size: 1.2em; margin: 10px 0; line-height: 1.6; }
+        .error { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="content">
+        <h1>Загрузка... ❤️</h1>
+    </div>
+
+    <script>
+        // Инициализация Telegram Web App
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Разворачиваем на весь экран
+
+        const START_DATE = new Date('2026-01-01T00:00:00');
+        const ALLOWED_IDS = [5215791503, 8522994363];
+        
+        // Получаем данные пользователя
+        const user = tg.initDataUnsafe?.user;
+        const contentDiv = document.getElementById('content');
+
+        if (user && ALLOWED_IDS.includes(user.id)) {
+            const today = new Date();
+            
+            // Считаем общие дни
+            const diffTime = Math.abs(today - START_DATE);
+            const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            // Считаем годы, месяцы и дни
+            let years = today.getFullYear() - START_DATE.getFullYear();
+            let months = today.getMonth() - START_DATE.getMonth();
+            let days = today.getDate() - START_DATE.getDate();
+
+            if (days < 0) {
+                months--;
+                const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                days += prevMonth.getDate();
+            }
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            // Выводим на экран
+            contentDiv.innerHTML = `
+                <h1>Привет, ${user.first_name}! 🥰</h1>
+                <div class="stats">
+                    Вы вместе уже: <br>
+                    <b>${years}</b> лет ❤️<br>
+                    <b>${months}</b> месяцев 🥰<br>
+                    <b>${days}</b> дней ❤️‍🩹<br>
+                    <hr>
+                    Всего <b>${totalDays}</b> дней вместе! ❤️
+                </div>
+            `;
+        } else {
+            contentDiv.innerHTML = `
+                <h1 class="error">Доступ закрыт 💔</h1>
+                <p>Извините, но это приложение только для двоих.</p>
+            `;
+        }
+    </script>
+</body>
+</html>
